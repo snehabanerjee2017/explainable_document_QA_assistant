@@ -2,4 +2,10 @@ pdfplumber
 ipykernel
 pypdf
 langchain
+langchain-community
+sentence-transformers
 tqdm
+openai
+python-dotenv
+faiss-cpu
+langchain-huggingface
