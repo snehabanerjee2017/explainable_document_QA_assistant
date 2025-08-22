@@ -4,9 +4,9 @@ from typing import List, Dict
 from dotenv import load_dotenv
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
-from langchain.chains.question_answering import load_qa_chain
 from langchain_community.chat_models import ChatOpenAI
 from langchain_community.callbacks.manager import get_openai_callback
+from langchain.chains import ConversationalRetrievalChain
 
 import streamlit as st
 
@@ -36,22 +36,44 @@ def main():
     chunks = load_chunks(PATH_TO_CHUNKS_JSONL)
     knowledge_base = build_knowledge_base(chunks)
 
-    query = st.text_input("Ask a question about the documents:", placeholder="e.g. What are the main categories of explainability techniques for large language models?")
-    
-    if st.button("Get Answer") and query.strip():
-        with st.spinner("Retrieving and generating answer..."):
-            docs_and_scores = knowledge_base.similarity_search_with_score(query, k=MAX_TOP_K)
-            docs = [doc for doc, _ in docs_and_scores]
+    # Initialize conversational memory in session state
+    if "chat_history" not in st.session_state:
+        st.session_state.chat_history = []
+    if "user_input" not in st.session_state:
+        st.session_state.user_input = ""
 
-            llm = ChatOpenAI(model_name=GPT_MODEL, temperature=0.2)
-            chain = load_qa_chain(llm, chain_type="stuff")
+    # Initialize LLM and ConversationalRetrievalChain
+    llm = ChatOpenAI(model_name=GPT_MODEL, temperature=0.2)
+    retriever = knowledge_base.as_retriever(search_kwargs={"k": MAX_TOP_K})
+    conversation_chain = ConversationalRetrievalChain.from_llm(llm, retriever)
 
+    # Chat interface
+    with st.form(key="chat_form", clear_on_submit=True):
+        user_input = st.text_input(
+            "Ask me anything about Explainable AI:",
+            placeholder="e.g. What are the main categories of explainability techniques?",
+            key="user_input",
+        )
+        submitted = st.form_submit_button("Send")
+
+        docs_and_scores = knowledge_base.similarity_search_with_score(user_input, k=MAX_TOP_K)
+
+    if submitted and user_input.strip():
+        with st.spinner("Thinking..."):
             with get_openai_callback():
-                response = chain.run(input_documents=docs, question=query)
+                result = conversation_chain(
+                    {"question": user_input, "chat_history": st.session_state.chat_history}
+                )
+            answer = result["answer"]
+            st.session_state.chat_history.append((user_input, answer))
 
-        # Show answer
-        st.subheader("Answer:")
-        st.write(response)
+    # Display chat history
+    if st.session_state.chat_history:
+        st.subheader("Conversation")
+        for i, (question, answer) in enumerate(st.session_state.chat_history):
+            st.markdown(f"**You:** {question}")
+            st.markdown(f"**Assistant:** {answer}")
+            st.markdown("---")
 
         # Show retrieved docs
         with st.expander("Show Retrieved Documents with Similarity Scores"):
@@ -62,7 +84,7 @@ def main():
                         st.markdown(f"**Filename:** {chunk['filename'][:-4].replace('_', ' ').title()}, **Similarity Score:** {similarity:.4f}")
                         st.markdown(f"{doc.page_content[:500]}...")
                         break
-                
+            
 
 if __name__ == "__main__":
     main()
