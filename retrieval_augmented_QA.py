@@ -40,9 +40,10 @@ def main():
     
     if st.button("Get Answer") and query.strip():
         with st.spinner("Retrieving and generating answer..."):
-            docs = knowledge_base.similarity_search(query, k=MAX_TOP_K)
-            llm = ChatOpenAI(model_name=GPT_MODEL, temperature=0.2)
+            docs_and_scores = knowledge_base.similarity_search_with_score(query, k=MAX_TOP_K)
+            docs = [doc for doc, _ in docs_and_scores]
 
+            llm = ChatOpenAI(model_name=GPT_MODEL, temperature=0.2)
             chain = load_qa_chain(llm, chain_type="stuff")
 
             with get_openai_callback():
@@ -53,11 +54,12 @@ def main():
         st.write(response)
 
         # Show retrieved docs
-        with st.expander("Show Retrieved Documents"):
-            for doc in docs:
+        with st.expander("Show Retrieved Documents with Similarity Scores"):
+            for (doc, score) in docs_and_scores:
                 for chunk in chunks:
                     if chunk["text"] == doc.page_content:
-                        st.markdown(f"**Filename:** {chunk['filename'][:-4].replace('_', ' ').title()}")
+                        similarity = 1 - score
+                        st.markdown(f"**Filename:** {chunk['filename'][:-4].replace('_', ' ').title()}, **Similarity Score:** {similarity:.4f}")
                         st.markdown(f"{doc.page_content[:500]}...")
                         break
                 
