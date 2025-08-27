@@ -1,3 +1,4 @@
+from utils import load_config
 from pathlib import Path
 from typing import List, Dict
 from pypdf import PdfReader
@@ -5,12 +6,14 @@ from langchain.text_splitter import CharacterTextSplitter
 from tqdm import tqdm
 import json
 
+config = load_config("./configs/config_data_processing.yaml")
+
 def process_text(text:str)-> List[str]:
     """Splits text into chunks."""
     text_splitter = CharacterTextSplitter(
         separator="\n",
-        chunk_size=600, 
-        chunk_overlap=120,
+        chunk_size=config['chunk_size'], 
+        chunk_overlap=config['chunk_overlap'],
         length_function=len)
     
     chunks = text_splitter.split_text(text)
@@ -48,15 +51,12 @@ def save_chunks_jsonl(chunks: List[Dict], output_file: Path):
 
 
 def main():
-    folder_path = Path("data")
-    output_file = Path("data/chunks.jsonl")
-    
-    if not folder_path.exists():
-        print(f"Folder {folder_path} does not exist.")
+    if not Path(config['folder_path']).exists():
+        print(f"Folder {Path(config['folder_path'])} does not exist.")
         return
     
-    chunks = process_pdfs(folder_path)
-    save_chunks_jsonl(chunks, output_file)
+    chunks = process_pdfs(Path(config['folder_path']))
+    save_chunks_jsonl(chunks, Path("data/chunks.jsonl"))
 
 if __name__ == "__main__":
     main()

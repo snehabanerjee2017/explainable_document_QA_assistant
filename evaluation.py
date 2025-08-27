@@ -1,6 +1,5 @@
-from retrieval_augmented_QA import load_chunks, build_knowledge_base
+from retrieval_augmented_QA import load_chunks, build_knowledge_base, get_LLM
 from utils import load_config
-import yaml
 
 import time
 from dotenv import load_dotenv
@@ -15,14 +14,15 @@ from ragas.metrics import faithfulness, answer_relevancy, context_precision, con
 from ragas import evaluate
 
 load_dotenv()
-data = load_config("./configs/config.yaml")
+config = load_config("./configs/config.yaml")
+
 
 def run_evaluation(queries, gold_answers, kb):
-    llm = ChatOpenAI(model_name=data['GPT_MODEL'], temperature=data['TEMPERATURE'])
+    llm = get_LLM(config)
     memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True, output_key="answer")
     qa_chain = ConversationalRetrievalChain.from_llm(
         llm,
-        retriever=kb.as_retriever(search_kwargs={"k": data['TOP_K']}),
+        retriever=kb.as_retriever(search_kwargs={"k": config['TOP_K']}),
         memory=memory,
         return_source_documents=True,
     )
@@ -64,8 +64,8 @@ def run_evaluation(queries, gold_answers, kb):
 
 
 def main():
-    chunks = load_chunks(data['PATH_TO_CHUNKS_JSONL'])
-    knowledge_base = build_knowledge_base(chunks)
+    chunks = load_chunks(config['PATH_TO_CHUNKS_JSONL'])
+    knowledge_base = build_knowledge_base(chunks, config)
 
     # Example test set
     queries = [

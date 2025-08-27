@@ -1,38 +1,22 @@
-from utils import load_config
-import json
-from pathlib import Path
-from typing import List, Dict
+from utils import load_chunks, load_config, build_knowledge_base, get_LLM
+
 from dotenv import load_dotenv
-from langchain_community.embeddings import HuggingFaceEmbeddings
-from langchain_community.vectorstores import FAISS
-from langchain_community.chat_models import ChatOpenAI
+
+
 from langchain_community.callbacks.manager import get_openai_callback
 from langchain.chains import ConversationalRetrievalChain
 
 import streamlit as st
 
 load_dotenv()
-data = load_config("./configs/config.yaml")
-
-def load_chunks(jsonl_path: Path)-> List[Dict]:
-    chunks = []
-    with open(jsonl_path, "r", encoding="utf-8") as f:
-        for line in f:
-            chunks.append(json.loads(line))
-    return chunks
-
-@st.cache_resource
-def build_knowledge_base(chunks: List[Dict]):
-    texts = [chunk["text"] for chunk in chunks]
-    embeddings = HuggingFaceEmbeddings(model_name=data['EMBEDDINGS_MODEL'])
-    return FAISS.from_texts(texts, embeddings)
+config = load_config("./configs/config.yaml")
 
 def main():
     st.set_page_config(page_title="📄 Explainable AI Q&A Assistant", page_icon="🤖", layout="centered")
     st.title("📄 Explainable AI Q&A Assistant")
 
-    chunks = load_chunks(data['PATH_TO_CHUNKS_JSONL'])
-    knowledge_base = build_knowledge_base(chunks)
+    chunks = load_chunks(config['PATH_TO_CHUNKS_JSONL'])
+    knowledge_base = build_knowledge_base(chunks, config)
 
     # Initialize conversational memory in session state
     if "chat_history" not in st.session_state:
@@ -41,8 +25,8 @@ def main():
         st.session_state.user_input = ""
 
     # Initialize LLM and ConversationalRetrievalChain
-    llm = ChatOpenAI(model_name=data['GPT_MODEL'], temperature=data['TEMPERATURE'])
-    retriever = knowledge_base.as_retriever(search_kwargs={"k": data['TOP_K']})
+    llm = get_LLM(config)
+    retriever = knowledge_base.as_retriever(search_kwargs={"k": config['TOP_K']})
     conversation_chain = ConversationalRetrievalChain.from_llm(llm, retriever)
 
     # Chat interface
@@ -54,7 +38,7 @@ def main():
         )
         submitted = st.form_submit_button("Send")
 
-        docs_and_scores = knowledge_base.similarity_search_with_score(user_input, k=data['TOP_K'])
+        docs_and_scores = knowledge_base.similarity_search_with_score(user_input, k=config['TOP_K'])
 
     if submitted and user_input.strip():
         with st.spinner("Thinking..."):
