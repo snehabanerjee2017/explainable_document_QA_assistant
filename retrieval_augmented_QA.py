@@ -1,3 +1,4 @@
+from utils import load_config
 import json
 from pathlib import Path
 from typing import List, Dict
@@ -11,10 +12,7 @@ from langchain.chains import ConversationalRetrievalChain
 import streamlit as st
 
 load_dotenv()
-GPT_MODEL = "gpt-3.5-turbo"
-EMBEDDINGS_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
-MAX_TOP_K = 5
-PATH_TO_CHUNKS_JSONL = Path("data/chunks.jsonl")
+data = load_config("./configs/config.yaml")
 
 def load_chunks(jsonl_path: Path)-> List[Dict]:
     chunks = []
@@ -26,14 +24,14 @@ def load_chunks(jsonl_path: Path)-> List[Dict]:
 @st.cache_resource
 def build_knowledge_base(chunks: List[Dict]):
     texts = [chunk["text"] for chunk in chunks]
-    embeddings = HuggingFaceEmbeddings(model_name=EMBEDDINGS_MODEL)
+    embeddings = HuggingFaceEmbeddings(model_name=data['EMBEDDINGS_MODEL'])
     return FAISS.from_texts(texts, embeddings)
 
 def main():
     st.set_page_config(page_title="📄 Explainable AI Q&A Assistant", page_icon="🤖", layout="centered")
     st.title("📄 Explainable AI Q&A Assistant")
 
-    chunks = load_chunks(PATH_TO_CHUNKS_JSONL)
+    chunks = load_chunks(data['PATH_TO_CHUNKS_JSONL'])
     knowledge_base = build_knowledge_base(chunks)
 
     # Initialize conversational memory in session state
@@ -43,8 +41,8 @@ def main():
         st.session_state.user_input = ""
 
     # Initialize LLM and ConversationalRetrievalChain
-    llm = ChatOpenAI(model_name=GPT_MODEL, temperature=0.2)
-    retriever = knowledge_base.as_retriever(search_kwargs={"k": MAX_TOP_K})
+    llm = ChatOpenAI(model_name=data['GPT_MODEL'], temperature=data['TEMPERATURE'])
+    retriever = knowledge_base.as_retriever(search_kwargs={"k": data['TOP_K']})
     conversation_chain = ConversationalRetrievalChain.from_llm(llm, retriever)
 
     # Chat interface
@@ -56,7 +54,7 @@ def main():
         )
         submitted = st.form_submit_button("Send")
 
-        docs_and_scores = knowledge_base.similarity_search_with_score(user_input, k=MAX_TOP_K)
+        docs_and_scores = knowledge_base.similarity_search_with_score(user_input, k=data['TOP_K'])
 
     if submitted and user_input.strip():
         with st.spinner("Thinking..."):

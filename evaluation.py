@@ -15,7 +15,7 @@ from ragas.metrics import faithfulness, answer_relevancy, context_precision, con
 from ragas import evaluate
 
 load_dotenv()
-data = load_config("./configs/config_eval.yaml")
+data = load_config("./configs/config.yaml")
 
 def run_evaluation(queries, gold_answers, kb):
     llm = ChatOpenAI(model_name=data['GPT_MODEL'], temperature=data['TEMPERATURE'])
