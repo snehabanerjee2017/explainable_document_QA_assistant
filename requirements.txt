@@ -10,3 +10,6 @@ python-dotenv
 faiss-cpu
 langchain-huggingface
 streamlit
+pyyaml
+datasets
+ragas

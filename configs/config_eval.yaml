@@ -1,0 +1,5 @@
+GPT_MODEL : gpt-3.5-turbo
+EMBEDDINGS_MODEL : sentence-transformers/all-MiniLM-L6-v2
+PATH_TO_CHUNKS_JSONL : data/chunks.jsonl
+TEMPERATURE : 0.2
+TOP_K : 5
