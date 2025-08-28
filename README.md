@@ -5,7 +5,7 @@ This project implements a **Retrieval-Augmented Question Answering (RAG)** pipel
 ---
 
 ## Features
-- Extracts and cleans text from PDFs
+- Extracts and cleans text from PDFs 
 - Splits text into **semantic chunks** for efficient retrieval
 - Embeds chunks with **sentence-transformers**
 - Stores embeddings in a **FAISS vector database**
@@ -58,40 +58,40 @@ This project implements a **Retrieval-Augmented Question Answering (RAG)** pipel
 
 
 ## Tech Stack
-Text Extraction: Pypdf, langchain-text-splitters
-Embeddings: sentence-transformers, HuggingFace
-Vector DB: FAISS 
-LLM: OpenAI GPT (via HuggingFace)
-Pipeline: LangChain
-Explainability: faithfulness checks, highlighting
-UI: Streamlit 
+- Text Extraction: Pypdf, langchain-text-splitters
+- Embeddings: sentence-transformers, HuggingFace
+- Vector DB: FAISS 
+- LLM: OpenAI GPT (via HuggingFace)
+- Pipeline: LangChain
+- Explainability: faithfulness checks, highlighting
+- UI: Streamlit 
 
 # Queries for Explainable AI / LLM Papers
-“What are the main categories of explainability techniques for large language models?”
-→ Should retrieve taxonomy (intrinsic vs post-hoc, attention visualization, feature attribution, etc.).
-“How do surveys describe the trade-off between accuracy and interpretability?”
-→ Should pull from XAI survey papers.
-“Which methods are considered state-of-the-art for explainable vision-language models?”
-→ Relevant for multimodal explainability papers.
-“How can LLMs themselves be used to generate explanations?”
-→ Some surveys mention LLMs as XAI tools.
-“What limitations of explainability are identified in recent literature?”
-→ Expected answers: lack of standard evaluation, risk of misleading explanations, scalability issues.
+“What are the main categories of explainability techniques for large language models?” <br />
+→ Should retrieve taxonomy (intrinsic vs post-hoc, attention visualization, feature attribution, etc.). <br />
+“How do surveys describe the trade-off between accuracy and interpretability?” <br />
+→ Should pull from XAI survey papers. <br />
+“Which methods are considered state-of-the-art for explainable vision-language models?” <br />
+→ Relevant for multimodal explainability papers. <br />
+“How can LLMs themselves be used to generate explanations?” <br />
+→ Some surveys mention LLMs as XAI tools. <br />
+“What limitations of explainability are identified in recent literature?” <br />
+→ Expected answers: lack of standard evaluation, risk of misleading explanations, scalability issues. <br />
 
 # Queries for Application-Focused Papers
-“How can explainable AI help in digital advertising according to recent studies?”
-→ Should retrieve from the advertising/XAI paper.
-“What role do LLMs play in causal inference explainability?”
-→ Pulls from the causal auditor paper.
-“What are the challenges in applying XAI for human activity recognition?”
-→ Should retrieve from the activity recognition paper.
+“How can explainable AI help in digital advertising according to recent studies?” <br />
+→ Should retrieve from the advertising/XAI paper. <br />
+“What role do LLMs play in causal inference explainability?” <br />
+→ Pulls from the causal auditor paper. <br />
+“What are the challenges in applying XAI for human activity recognition?” <br />
+→ Should retrieve from the activity recognition paper. <br />
 
 # Queries for EU AI Act (Policy/Regulation)
-“What are the four risk categories defined in the EU AI Act?”
-→ Unacceptable, high-risk, limited-risk, minimal-risk.
-“What transparency obligations are imposed on providers of generative AI systems?”
-→ Should retrieve obligations like labeling AI-generated content, documentation requirements.
-“How does the EU AI Act address high-risk AI systems in healthcare?”
-→ Relevant section in Act + summaries from KPMG/Futurium docs.
-“What penalties can organizations face for non-compliance with the EU AI Act?”
+“What are the four risk categories defined in the EU AI Act?” <br />
+→ Unacceptable, high-risk, limited-risk, minimal-risk. <br />
+“What transparency obligations are imposed on providers of generative AI systems?” <br />
+→ Should retrieve obligations like labeling AI-generated content, documentation requirements. <br />
+“How does the EU AI Act address high-risk AI systems in healthcare?” <br />
+→ Relevant section in Act + summaries from KPMG/Futurium docs. <br />
+“What penalties can organizations face for non-compliance with the EU AI Act?” <br />
 → Fines, restrictions, etc.
