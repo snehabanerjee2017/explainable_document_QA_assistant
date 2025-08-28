@@ -10,7 +10,7 @@ This project implements a **Retrieval-Augmented Question Answering (RAG)** pipel
 - Embeds chunks with **sentence-transformers**
 - Stores embeddings in a **FAISS vector database**
 - Retrieves the most relevant chunks for a user query
-- Uses **OpenAI GPT models** (or other LLMs) for answer generation
+- Uses **OpenAI GPT models** for answer generation
 - Provides a **Streamlit UI** for interactive querying
 - Evaluates the system with metrics:
   - **Faithfulness**
