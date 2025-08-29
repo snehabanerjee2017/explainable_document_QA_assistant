@@ -26,10 +26,12 @@ This project implements a **Retrieval-Augmented Question Answering (RAG)** pipel
    cd explainable_document_QA_assistant
 
 2. **Set up environment**
+
     python3 -m venv venv
     source venv/bin/activate
 
 3. **Install dependencies**
+
     pip install -r requirements.txt
 
 4. **Set your environment variables**
@@ -40,9 +42,11 @@ This project implements a **Retrieval-Augmented Question Answering (RAG)** pipel
 
 5. **Process PDFs**
     Put your PDFs in the data/ folder, then run:
+
         python3 data_processing.py
 
 6. **Launch the Document-QA Assistant with Streamlit App**
+
     streamlit run data_processing.py
 
     Enter a question in the UI.
@@ -50,6 +54,7 @@ This project implements a **Retrieval-Augmented Question Answering (RAG)** pipel
 
 7. **Evaluation**
     Evaluate the RAG pipeline with faithfulness, answer relevancy, and context metrics:
+    
         python3 evaluation.py
 
     Example output:
