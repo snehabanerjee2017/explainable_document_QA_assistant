@@ -55,7 +55,10 @@ This project implements a **Retrieval-Augmented Question Answering (RAG)** pipel
     Example output:
         {'faithfulness': 0.90, 'answer_relevancy': 0.85, 'context_precision': 0.78, 'context_recall': 0.65}
   
-
+**Future Improvements**
+- Add support for multi-modal documents (images + text)
+- Use reranking models for better retrieval
+- Deploy via Docker or cloud services
 
 ## Tech Stack
 - Text Extraction: Pypdf, langchain-text-splitters
