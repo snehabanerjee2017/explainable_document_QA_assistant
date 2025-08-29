@@ -46,16 +46,16 @@ This project implements a **Retrieval-Augmented Question Answering (RAG)** pipel
         python3 data_processing.py
 
 6. **Launch the Document-QA Assistant with Streamlit App**
-    ```bash
-    streamlit run data_processing.py
+    ```
+    streamlit run data_processing.py ```
 
     Enter a question in the UI.
     Get an answer sourced from your documents.
 
 7. **Evaluation**
     Evaluate the RAG pipeline with faithfulness, answer relevancy, and context metrics:
-        ```bash
-        python3 evaluation.py
+        ```
+        python3 evaluation.py ```
 
     Example output:
         {'faithfulness': 0.90, 'answer_relevancy': 0.85, 'context_precision': 0.78, 'context_recall': 0.65}
