@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "explainable_document_qa_assistant"
+version = "0.1.0"
+description = "Retrieval-augmented QA system over PDFs with LLMs and evaluation metrics"
+readme = "README.md"
+requires-python = ">=3.13.3"
+
+dependencies = [
+    "datasets",
+    "faiss-cpu",
+    "ipykernel",
+    "langchain",
+    "langchain-community",
+    "langchain-huggingface",
+    "openai",
+    "pdfplumber",
+    "pypdf",
+    "python-dotenv",
+    "pyyaml",
+    "ragas",
+    "sentence-transformers",
+    "streamlit",
+    "tqdm"
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
